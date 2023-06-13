@@ -1,0 +1,122 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Gallery</title>
+    <meta charset="utf-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Wix Madefor Text', sans-serif;
+            text-align: center;
+        }
+        .image {
+            max-width: 300px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        .selector {
+            font-size: 24px;
+        }
+        .selector select {
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Uploaded images</h2>
+    <div class="selector">
+        Choose category:
+        <select id="selectCategory">
+            <option>All</option>
+            <option>Cats</option>
+            <option>Dogs</option>
+            <option>Capybaras</option>
+            <option>Pallas cats</option>
+            <option>Parrots</option>
+            <option>Other</option>
+        </select>
+    </div>
+        <br />
+        <div id="imageContainer"></div>
+        <a href="/" class="btn btn-primary">Go back to the index page</a>
+        <script>
+            function loadImages() {
+                console.log('loadImages()');
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', '/getimages', true);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                        var images = JSON.parse(xhr.responseText);
+                        displayImages(images);
+                    }
+                };
+                xhr.send();
+            }
+            function loadImagesFromCategory(category) {
+                console.log('loadImagesFromCategory()');
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', '/getimagesfromcategory?category=' + encodeURIComponent(category), true);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                        var images = JSON.parse(xhr.responseText);
+                        displayImages(images);
+                    }
+                };
+                xhr.send();
+            }
+            function displayImages(images) {
+                console.log('displayImages()');
+                var container = document.getElementById('imageContainer');
+                container.innerHTML = '';
+
+                images.forEach(function (image) {
+                    var imgElement = document.createElement('img');
+                    imgElement.src = image;
+                    imgElement.classList.add('image');
+                    container.appendChild(imgElement);
+                });
+            }
+            async function getImages() {
+                console.log('getImages()');
+                const response = await fetch("/api/images", {
+                    method: "GET",
+                    headers: { "Accept": "application/json" }
+                });
+                if (response.ok === true) {
+                    const images = await response.json();
+                    const rows = document.querySelector("tbody");
+                }
+            }
+            function row(image) {
+
+                const tr = document.createElement("tr");
+                tr.setAttribute("data-rowid", image.id);
+
+                const filenameTd = document.createElement("td");
+                filenameTd.append(image.fileName);
+                tr.append(filenameTd);
+
+                const categoryTd = document.createElement("td");
+                categoryTd.append(image.category);
+                tr.append(categoryTd);
+
+                return tr;
+            }
+            document.getElementById('selectCategory').addEventListener('change', async (event) => {
+                const selectedCategory = event.target.value;
+                if (selectedCategory === "All") {
+                    loadImages();
+                }
+                else {
+                    loadImagesFromCategory(selectedCategory);
+                }
+            });
+            window.onload = function () {
+                loadImages();
+                getImages()
+            };
+        </script>
+</body>
+</html>

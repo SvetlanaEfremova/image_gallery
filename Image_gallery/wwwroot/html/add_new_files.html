@@ -1,0 +1,125 @@
+﻿<html>
+<head>
+    <title>Add new images</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Wix Madefor Text', sans-serif;
+        }
+        h1 {
+            text-align: center;
+        }
+        .upload-form {
+            text-align: center;
+        }
+        .form-item {
+            margin-bottom: 10px; 
+        }
+        .btn {
+            background-color: pink;
+            font-size: 18px;
+            color: black;
+            font-weight: bold;
+            padding: 10px 20px;
+        }
+        .select-category-item {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        #selectCategory {
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Upload new images</h1>
+    <br>
+    <div class="upload-form">
+        <form action="BufferedSingleFileUploadPhysical/?handler=Upload"
+              enctype="multipart/form-data" onsubmit="AJAXSubmit(this); AddImageToDB(this); return false;"
+              method="post">
+            <div class="form-item">
+                <h2>Upload files:</h2>
+                <input id="FileUpload_FormFile" type="file" name="FileUpload.FormFile" />
+            </div>
+            <div class="select-category-item">
+                    Select image category:
+                    <select id="selectCategory" name="Select.FormFile">
+                        <option>Cats</option>
+                        <option>Dogs</option>
+                        <option>Capybaras</option>
+                        <option>Pallas cats</option>
+                        <option>Parrots</option>
+                        <option>Other</option>
+                    </select>
+            </div>
+            <div class="form-item">
+                <input class="btn" type="submit" value="Upload" />
+                <output id="result"></output>
+            </div>
+        </form>
+        <form action="DeleteAllImages"
+              enctype="multipart/form-data" onsubmit="DeleteAllImages(); return false;"
+              method="post">
+            <input class="btn" type="submit" value="Delete all images" />
+        </form>
+    </div>
+    <script>
+        async function AJAXSubmit(oFormElement) {
+            var resultElement = document.getElementById("result");
+            console.log('AJAXSubmit');
+            const formData = new FormData(oFormElement);
+            try {
+                const response = await fetch(oFormElement.action, {
+                    method: 'POST',
+                    body: formData
+                });
+                if (response.ok) {
+                    console.log('oFormElement', oFormElement);
+                    window.location.href = 'html/page_after_download.html';
+                }
+                resultElement.value = 'Result: ' + response.status + ' ' +
+                    response.statusText;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        async function AddImageToDB(formElement) {
+            console.log('AddImageToDB');
+            const formData = new FormData(formElement);
+            const fileName = formData.get('FileUpload.FormFile').name;
+            const selectedValue = formData.get('Select.FormFile');
+            const response = await fetch("api/images", {
+                method: "POST",
+                headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    filename: fileName,
+                    category: selectedValue
+                })
+            });
+            if (response.ok === true) {
+                console.log('fileName');
+            }
+            else {
+                const error = await response.json();
+                console.log(error.message);
+            }
+        }
+        async function DeleteAllImages() {
+            const response = await fetch(`/api/images`, {
+                method: "DELETE",
+                headers: { "Accept": "application/json" }
+            });
+            if (response.ok === true) {
+                console.log('all images were deleted');
+            }
+            else {
+                const error = await response.json();
+                console.log(error.message);
+            }
+        }
+    </script>
+</body>
+</html>

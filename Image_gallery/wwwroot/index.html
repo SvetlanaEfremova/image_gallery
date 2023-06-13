@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Image gallery</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text&display=swap" rel="stylesheet">
+    <style>
+        *, html, body {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Wix Madefor Text', sans-serif;
+            font-size: 16px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+        h2 {
+            text-align: center;
+            font-weight: bold;
+            color: darkred;
+            margin: 10px;
+        }
+
+        img {
+            justify-self: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            justify-items: center;
+        }
+        .form-container {
+            display: flex;
+            justify-items: center;
+            justify-content: center;
+            text-align: center;
+            grid-gap: 7rem;
+        }
+        .gallery {
+            margin: 0 auto;
+            width: 960px;
+            display: grid;
+            justify-content: center;
+            justify-items: center;
+            grid-gap: .5rem;
+            grid-template-columns: repeat(4, 1fr);
+        }
+        .form-container input[type="submit"] {
+            background-color: pink;
+            font-size: 18px;
+            color: black;
+            font-weight: bold;
+            padding: 10px 20px;
+        }
+        .image-fit {
+            max-width: 350px;
+            max-height: 400px;
+        }
+
+        .image-fit img {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to the image gallery!</h1>
+    <br />
+    <div class="container">
+        <div class="gallery">
+            <div class="image-fit"><img src="html/shelley1.jpg" alt="shellechka1"></div>
+            <div class="image-fit"><img src="html/35508cdc-462a-41c2-b199-99239680bd2d.jpg" alt="archie1"></div>
+            <div class="image-fit"><img src="html/IMG-8614.jpg" alt="shellechka2"></div>
+            <div class="image-fit"><img src="html/12d84582-f369-4bab-ba52-7059ce0210d2.jpg" alt="archie2"></div>
+        </div>
+    </div>
+    <h2>Choose an option:</h2>
+    <div class="form-container">
+        <form action="view" method="post" enctype="multipart/form-data">
+            <input type="submit" value="View images" />
+        </form>
+        <form action="add" method="post" enctype="multipart/form-data">
+            <input type="submit" value="Add new images" />
+        </form>
+    </div>
+
+</body>
+</html>
